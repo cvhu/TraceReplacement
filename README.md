@@ -27,6 +27,8 @@
 		<br>
 		<br>
 		with the normal accumulating traces (used by the above algorithm):
+		<br>
+		<br>
 		<img src="fig/accumulate_e.png" height="50px">
 		<br>
 		<br>

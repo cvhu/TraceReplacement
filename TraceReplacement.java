@@ -105,7 +105,7 @@ public class TraceReplacement{
 		return actions.get(totalCount-1);
 	}	
 
-	public void Sarsa(double lambda, double eta, double alpha, double gamma, int n){		
+	public void Sarsa(double lambda, double eta, double alpha, double gamma, int n, String method){		
 		HashMap<String, HashMap<String, Double>> q = new HashMap<String, HashMap<String, Double>>();
 		HashMap<String, HashMap<String, Double>> e = new HashMap<String, HashMap<String, Double>>();
 		RightWrongProcess rwp = new RightWrongProcess(nodes);
@@ -140,7 +140,23 @@ public class TraceReplacement{
 
 				HashMap<String, Double> ea = e.get(s);
 				double eav = ea.get(a);
-				ea.put(a, eav+1);
+				if(method.equals("accumulate")){
+					ea.put(a, eav+1);
+				}else if(method.equals("replace")){
+					for(String action : q.get(s).keySet()){
+						ea.put(action, 1);
+					}					
+				}else if(method.equals("replace variant")){
+					for(String action : q.get(s).keySet()){
+						if(action.equals(a)){
+							ea.put(action, eav+1);
+						}else{
+							ea.put(action, 0);
+						}							
+					}										
+				}else{
+					ea.put(a, eav+1);					
+				}
 				e.put(s, ea);
 				
 				for(String state : q.keySet()){
@@ -166,6 +182,6 @@ public class TraceReplacement{
 	
 	public static void main(String[] args){
 		TraceReplacement tr = new TraceReplacement();
-		tr.Sarsa(0.1, 0.1, 0.1, 1.0, 500);
+		tr.Sarsa(0.1, 0.1, 0.1, 1.0, 500, "accumulate");
 	}
 }
