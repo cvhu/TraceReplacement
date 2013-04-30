@@ -20,16 +20,28 @@
 <div>
 	<h3> Methods </h3>
 	<p>
+		In this exercise, we will run a tabular Sarsa(lamba) with various learning parameter values (lambda, eta, alpha and gamma), according to the following algorithm provided by Sutton & Barto:
+		<br>
+		<br>
+		<img src="fig/sarsa.png" height="250px">
+		<br>
+		<br>
+		with the normal accumulating traces (used by the above algorithm):
 		<img src="fig/accumulate_e.png" height="50px">
+		<br>
+		<br>
+		In addition, we will compare our results with two different replace-trace methods. One that resets everytime the same state is revisited:
 		<br>
 		<br>
 		<img src="fig/replace_e.png" height="50px">
 		<br>
 		<br>
+		The other one that accumulates for the same state-action pairs, reset to zero for same state but different actions, and propagates for all other states on the trajectory:
+		<br>
+		<br>
 		<img src="fig/replace_e_better.png" height="75px">
 		<br>
-		<br>
-		<img src="fig/sarsa.png" height="250px">
+		<br>		
 	</p>
 </div>
 
