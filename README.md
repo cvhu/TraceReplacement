@@ -124,6 +124,6 @@
 <div>
 	<h3> Conclusion </h3>
 	<p>
-				
+		In this exercise, we recreated the experiment covered in Example 7.5 and extended Programing Exercise 7.7 from Sutton & Barto's textbook. We examined the learning performance of tabular Sarsa with accumulating, replacing and a even better replacing traces methods on a simple but representative task. Although the effectiveness of the vanilla replace-trace method has been shown to be limited in this domain, we clearly observed a significant improvement of the replace-variant method over the original accumulating-trace method.
 	</p>
 </div>
