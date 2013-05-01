@@ -59,7 +59,7 @@ class RightWrongProcess{
 }
 
 public class TraceReplacement{
-	int nodes = 100;
+	static int nodes = 100;
 
 	public String etaGreedy(HashMap<String, Double> qa, double eta){
 		Random rand = new Random();
@@ -105,13 +105,13 @@ public class TraceReplacement{
 		return actions.get(totalCount-1);
 	}	
 
-	public void Sarsa(double lambda, double eta, double alpha, double gamma, int n, String method){		
+	public int Sarsa(double lambda, double eta, double alpha, double gamma, int n, String method){		
 		HashMap<String, HashMap<String, Double>> q = new HashMap<String, HashMap<String, Double>>();
 		HashMap<String, HashMap<String, Double>> e = new HashMap<String, HashMap<String, Double>>();
 		RightWrongProcess rwp = new RightWrongProcess(nodes);
 
 		// initialize Q arbitrarily, and e = 0 for all s, a
-		for(int i = 0; i < n; i++){		
+		for(int i = 0; i <= nodes; i++){		
 			HashMap<String, Double> qa = new HashMap<String, Double>();
 			qa.put("right", 0.5);
 			qa.put("wrong", 0.5);
@@ -121,14 +121,14 @@ public class TraceReplacement{
 			ea.put("wrong", 0.0);
 			e.put(String.format("s%d", i), ea);
 		}
-
+		int steps = 0;
 		// repeat for each episode
 		for(int i = 0; i < n; i++){
 			rwp.reset();
 			String s = rwp.getState();			
 			String a = etaGreedy(q.get(s), eta);
 			int rs = 0;
-			int steps = 0;
+			steps = 0;
 			while(!rwp.terminate()){
 				steps++;
 				rwp.action(a);
@@ -141,21 +141,21 @@ public class TraceReplacement{
 				HashMap<String, Double> ea = e.get(s);
 				double eav = ea.get(a);
 				if(method.equals("accumulate")){
-					ea.put(a, eav+1);
+					ea.put(a, eav+1.0);
 				}else if(method.equals("replace")){
 					for(String action : q.get(s).keySet()){
-						ea.put(action, 1);
+						ea.put(action, 1.0);
 					}					
 				}else if(method.equals("replace variant")){
 					for(String action : q.get(s).keySet()){
 						if(action.equals(a)){
-							ea.put(action, eav+1);
+							ea.put(action, eav+1.0);
 						}else{
-							ea.put(action, 0);
+							ea.put(action, 0.0);
 						}							
 					}										
 				}else{
-					ea.put(a, eav+1);					
+					ea.put(a, eav+1.0);					
 				}
 				e.put(s, ea);
 				
@@ -176,12 +176,56 @@ public class TraceReplacement{
 				a = a_n;
 				rs += r;
 			}			
-			System.out.println(steps);
-		}		
+			// if(i==(n-1)){
+			// 	System.out.printf("%d\n",steps);
+			// }else{
+			// 	System.out.printf("%d, ",steps);				
+			// }
+		}	
+		return steps;	
 	}
 	
 	public static void main(String[] args){
 		TraceReplacement tr = new TraceReplacement();
-		tr.Sarsa(0.1, 0.1, 0.1, 1.0, 500, "accumulate");
+		//lambda, eta, alpha, gamma
+		// tr.Sarsa(0.9, 0.1, 0.1, 1.0, 500, "accumulate");
+		// tr.Sarsa(0.9, 0.1, 0.1, 1.0, 500, "replace");
+		// tr.Sarsa(0.9, 0.1, 0.1, 1.0, 500, "replace variant");
+
+		// tr.Sarsa(0.75, 0.1, 0.1, 1.0, 500, "accumulate");
+		// tr.Sarsa(0.75, 0.1, 0.1, 1.0, 500, "replace");
+		// tr.Sarsa(0.75, 0.1, 0.1, 1.0, 500, "replace variant");
+		
+		// tr.Sarsa(0.6, 0.1, 0.1, 1.0, 500, "accumulate");
+		// tr.Sarsa(0.6, 0.1, 0.1, 1.0, 500, "replace");
+		// tr.Sarsa(0.6, 0.1, 0.1, 1.0, 500, "replace variant");		
+
+		// tr.Sarsa(0.5, 0.1, 0.1, 1.0, 500, "accumulate");
+		// tr.Sarsa(0.5, 0.1, 0.1, 1.0, 500, "replace");
+		// tr.Sarsa(0.5, 0.1, 0.1, 1.0, 500, "replace variant");
+
+		// for(double alpha = 0.0; alpha <= 1.0; alpha+=0.2){
+		// 	for(double lambda = 0.0; lambda <= 1.0; lambda+=0.2){
+		// 		// int steps = tr.Sarsa(lambda, 0.1, alpha, 1.0, 500, "accumulate");
+		// 		// int steps = tr.Sarsa(lambda, 0.1, alpha, 1.0, 500, "replace");
+		// 		int steps = tr.Sarsa(lambda, 0.1, alpha, 1.0, 500, "replace variant");
+		// 		if(lambda==1.0){
+		// 			System.out.printf("%d\n", steps);
+		// 		}else{
+		// 			System.out.printf("%d,", steps);
+		// 		}
+				
+		// 	}
+		// }
+		int n = 5;
+
+		for(double lambda = 0.0; lambda <= 1.0; lambda+=0.1){
+			int steps1 = tr.Sarsa(lambda, 0.1, 0.1, 1.0, n, "accumulate");
+			int steps2 = tr.Sarsa(lambda, 0.1, 0.1, 1.0, n, "replace");
+			int steps3 = tr.Sarsa(lambda, 0.1, 0.1, 1.0, n, "replace variant");	
+			System.out.printf("%d, %d, %d\n", steps1, steps2, steps3);			
+		}
+
+
 	}
 }
